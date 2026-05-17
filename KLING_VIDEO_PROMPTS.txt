@@ -1,0 +1,128 @@
+═══════════════════════════════════════════════════════════
+KLING VIDEO PROMPTS · PA MONTY HOST STATES
+For: REWIRE THE BRAIN game show
+═══════════════════════════════════════════════════════════
+
+YOU NEED TO GENERATE 6 VIDEOS IN KLING.
+
+For EACH one:
+  ▸ Upload `pa_monty_host.jpg` as the reference/start image
+  ▸ Use the prompt below
+  ▸ Set duration: 5 seconds
+  ▸ Aspect ratio: 9:16 (vertical) OR 1:1 (square) — game crops to fit
+  ▸ Mode: Standard or Pro (both work)
+  ▸ Download as .mp4
+  ▸ Rename to the filename listed below
+  ▸ Drop into your `rewire-the-brain/` folder alongside index.html
+
+ALL 6 VIDEOS MUST KEEP THE SAME:
+  • framing (chest-up portrait)
+  • lighting (dark background, soft front light)
+  • outfit (orange shirt, black tie)
+  • character (long dreadlocks, goatee, calm presence)
+This is CRITICAL for the videos to cut seamlessly between states.
+
+
+
+═══════════════════════════════════════════════════════════
+01 ▸ host_idle.mp4 · NEUTRAL ATTENTIVE
+═══════════════════════════════════════════════════════════
+
+PROMPT:
+"Cinematic portrait of a man with long dark dreadlocks, goatee, wearing an orange dress shirt and black tie against a black studio backdrop. He breathes slowly and naturally, eyes looking directly at the camera with a calm focused expression. Very subtle micro-movements — chest rising and falling with breath, one slow blink, slight head tilt. Looks attentive, professional, like a game show host listening to a contestant. No speaking, no big gestures. Subtle, broadcast-quality, photorealistic. 5-second seamless loop."
+
+USAGE IN GAME: Default state. Plays while the player is reading the question.
+
+
+
+═══════════════════════════════════════════════════════════
+02 ▸ host_locking.mp4 · INTENSE LEAN-IN
+═══════════════════════════════════════════════════════════
+
+PROMPT:
+"Cinematic portrait of a man with long dark dreadlocks, goatee, wearing an orange dress shirt and black tie against a black studio backdrop. He leans slightly forward toward the camera with an intense focused gaze, eyes narrowing slightly, head tilting down just a touch. The expression is serious, anticipatory — like watching a contestant lock in their final answer on a game show. No smile, no speaking. Subtle micro-expression of suspense and curiosity. Photorealistic, broadcast-quality, 5-second seamless loop."
+
+USAGE IN GAME: Plays during the 2.5-second "Final Answer?" suspense pause after the player locks in.
+
+
+
+═══════════════════════════════════════════════════════════
+03 ▸ host_correct.mp4 · APPROVING NOD
+═══════════════════════════════════════════════════════════
+
+PROMPT:
+"Cinematic portrait of a man with long dark dreadlocks, goatee, wearing an orange dress shirt and black tie against a black studio backdrop. He gives a single approving nod with a small confident smile, eyebrows lifting slightly in genuine approval. The expression is warm but professional — like a game show host congratulating a contestant on a correct answer. Subtle, dignified, no laughter or big reactions. After the nod, returns to a faintly smiling neutral. Photorealistic, broadcast-quality, 5-second seamless loop."
+
+USAGE IN GAME: Plays when the player answers a normal (non-safety-net) question correctly.
+
+
+
+═══════════════════════════════════════════════════════════
+04 ▸ host_wrong.mp4 · DISAPPOINTED HEAD SHAKE
+═══════════════════════════════════════════════════════════
+
+PROMPT:
+"Cinematic portrait of a man with long dark dreadlocks, goatee, wearing an orange dress shirt and black tie against a black studio backdrop. He gives a single slow disappointed head shake, eyes closing briefly, mouth tightening into a sympathetic frown. The expression is empathetic disappointment — like a game show host watching a contestant get an answer wrong. Not angry, not theatrical — quietly sad on the player's behalf. Returns to a thoughtful concerned neutral. Photorealistic, broadcast-quality, 5-second seamless loop."
+
+USAGE IN GAME: Plays when the player gets a question wrong.
+
+
+
+═══════════════════════════════════════════════════════════
+05 ▸ host_celebrate.mp4 · BIG HYPE / CELEBRATION
+═══════════════════════════════════════════════════════════
+
+PROMPT:
+"Cinematic portrait of a man with long dark dreadlocks, goatee, wearing an orange dress shirt and black tie against a black studio backdrop. He breaks into a big genuine smile, points enthusiastically toward the camera with a 'YES!' energy, briefly raises a fist in celebration. Animated, energetic, but still polished and broadcast-appropriate — like a game show host celebrating a million-dollar answer. Big smile, eyes wide and bright, head moving with excitement. Loops naturally back to a still-smiling state. Photorealistic, broadcast-quality, 5-second seamless loop."
+
+USAGE IN GAME: Plays when the player passes a safety net ($16K, $250K) or wins the $1,000,000 final question.
+
+
+
+═══════════════════════════════════════════════════════════
+06 ▸ host_mentor.mp4 · SPEAKING / EXPLAINING
+═══════════════════════════════════════════════════════════
+
+PROMPT:
+"Cinematic portrait of a man with long dark dreadlocks, goatee, wearing an orange dress shirt and black tie against a black studio backdrop. He speaks directly to the camera with confident measured gestures — slight hand movement entering frame from below, eyebrows lifting and falling expressively with speech, head tilting subtly to emphasize points. Lips moving in natural speech pattern (no specific words needed — just animated talking motion). The expression is wise, mentor-like, sharing important advice. Photorealistic, broadcast-quality, 5-second seamless loop."
+
+USAGE IN GAME: Plays inside the "Ask the Mentor" lifeline overlay while displaying PA Monty's advice.
+
+
+
+═══════════════════════════════════════════════════════════
+HOW TO USE THESE VIDEOS IN THE GAME
+═══════════════════════════════════════════════════════════
+
+1. Generate all 6 in Kling using the prompts above
+2. Rename them exactly as listed (host_idle.mp4, host_locking.mp4, etc.)
+3. Drop them into the same folder as index.html
+4. Reload the game in browser — the videos will auto-play based on game state
+5. If a video is missing, the static fallback image (pa_monty_host.jpg) automatically takes over for that state — game still works fully
+
+═══════════════════════════════════════════════════════════
+FILE SIZE TIPS
+═══════════════════════════════════════════════════════════
+
+Kling exports can be heavy (5-15MB each). For best GitHub Pages performance:
+  ▸ Compress with HandBrake (free) → "Web Optimized" preset → ~500KB-1MB each
+  ▸ Or use https://www.veed.io / https://www.freeconvert.com to drop quality slightly
+  ▸ Target: under 2MB per video, total repo under 15MB
+
+If repo grows past 25MB, GitHub may warn — consider hosting videos on Cloudflare R2
+or Bunny.net CDN and updating the src attributes in index.html to point to those URLs.
+
+═══════════════════════════════════════════════════════════
+PRO MOVE — GENERATE VARIATIONS
+═══════════════════════════════════════════════════════════
+
+After your first round works, consider generating 2-3 variations of EACH state
+(host_idle_a.mp4, host_idle_b.mp4, host_idle_c.mp4) and randomly cycling them
+each time the state activates. Makes the host feel infinitely fresh.
+
+I can wire that randomization into the game when you're ready.
+
+═══════════════════════════════════════════════════════════
+TRADE LIKE AN ALGO · M01 GAME · KLING PROMPTS
+ENGINEERED FOR CONSISTENCY · BUILT FOR DISCIPLINE
+═══════════════════════════════════════════════════════════
