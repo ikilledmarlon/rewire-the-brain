@@ -166,6 +166,100 @@ body { display: flex; align-items: center; justify-content: center; }
   font-size: 10px; color: var(--dim); letter-spacing: 3px;
 }
 
+/* DIFFICULTY SELECTOR */
+.difficulty-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 4px;
+  margin-bottom: 22px;
+  font-weight: 700;
+}
+.difficulty-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.diff-btn {
+  font-family: 'Oswald', sans-serif;
+  background: linear-gradient(135deg, var(--panel) 0%, var(--bg-deep) 100%);
+  border: 2px solid var(--gold-deep);
+  padding: 20px 18px;
+  cursor: pointer;
+  color: var(--white);
+  text-align: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+.diff-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(232,146,42,0.18) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.25s;
+}
+.diff-btn:hover {
+  border-color: var(--gold-bright);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(232,146,42,0.35), 0 0 60px rgba(232,146,42,0.15);
+}
+.diff-btn:hover::before { opacity: 1; }
+.diff-btn:active { transform: translateY(-1px); }
+.diff-btn.featured {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, rgba(232,146,42,0.15) 0%, var(--panel) 100%);
+  box-shadow: 0 0 30px rgba(232,146,42,0.25);
+}
+.diff-btn.featured::after {
+  content: '★ RECOMMENDED';
+  position: absolute;
+  top: 6px; right: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7px;
+  color: var(--gold-bright);
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+.diff-btn .diff-tier {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.diff-btn .diff-name {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  background: linear-gradient(180deg, var(--white) 0%, #c0d4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+}
+.diff-btn.featured .diff-name {
+  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold-deep) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.diff-btn .diff-desc {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--dim);
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 700px) {
+  .difficulty-grid { grid-template-columns: 1fr; gap: 10px; max-width: 320px; }
+  .diff-btn { padding: 14px 16px; }
+  .diff-btn .diff-name { font-size: 20px; margin-bottom: 6px; }
+  .diff-btn .diff-desc { font-size: 11px; }
+  .diff-btn.featured::after { font-size: 6px; }
+}
+
 /* GAME */
 #game { position: absolute; inset: 0; display: none; z-index: 10; }
 #game.on { display: block; }
@@ -722,7 +816,24 @@ body { display: flex; align-items: center; justify-content: center; }
       Three lifelines. Two safety nets. <strong>One shot.</strong>
     </div>
     <div class="start-cluster">
-      <button class="start-btn" id="startBtn">▶ ENTER THE STAGE</button>
+      <div class="difficulty-label">▸ CHOOSE YOUR PATHWAY ▸</div>
+      <div class="difficulty-grid">
+        <button class="diff-btn" data-diff="easy">
+          <div class="diff-tier">FOUNDATION</div>
+          <div class="diff-name">Easy</div>
+          <div class="diff-desc">Core concepts.<br>Built for learning.</div>
+        </button>
+        <button class="diff-btn featured" data-diff="intermediate">
+          <div class="diff-tier">APPLIED</div>
+          <div class="diff-name">Intermediate</div>
+          <div class="diff-desc">Real scenarios.<br>Which mechanism?</div>
+        </button>
+        <button class="diff-btn" data-diff="challenge">
+          <div class="diff-tier">SYNTHESIS</div>
+          <div class="diff-name">Challenge</div>
+          <div class="diff-desc">Edge cases.<br>Even pros miss.</div>
+        </button>
+      </div>
       <div class="start-hint">HOSTED BY PA MONTY</div>
     </div>
   </div>
@@ -867,7 +978,11 @@ const $$ = s => [...document.querySelectorAll(s)];
 const PRIZE = [100, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 1000000];
 const SAFETY_NETS = [6, 10];
 
-const QUESTIONS = [
+// ════════════════════════════════════════════════════════
+// QUESTION BANKS — 3 DIFFICULTY MODES, 12 QUESTIONS EACH
+// ════════════════════════════════════════════════════════
+
+const QUESTIONS_EASY = [
   { q: "What percentage of your trading day is conscious activity?", a: ["5%", "25%", "50%", "95%"], correct: 0,
     lesson: "5%. The conscious mind reads rules, runs math, writes the plan. The other 95% is wired — that's the mind that actually executes under pressure.",
     mentor: "Easy one to open. Five percent. The conscious mind is slow and energy-hungry. Trust the answer.", mentorConf: 99 },
@@ -906,7 +1021,89 @@ const QUESTIONS = [
     mentor: "Every moment is unique. That's the one. Everyone memorizes it. Almost nobody lives it. Trust your read. This is the move.", mentorConf: 72 }
 ];
 
+const QUESTIONS_INTERMEDIATE = [
+  { q: "A trader follows their checklist flawlessly for 10 days. On day 11, they fade a clean signal. Most likely cause?", a: ["The system stopped working", "Subconscious hijack — old pathway still dominant", "Bad luck", "The conscious mind was too active"], correct: 1,
+    lesson: "Ten days isn't enough to outrep a years-old pathway. The new pathway is narrower than the old. Day 11 is when willpower thins and the wired default fires.",
+    mentor: "Old pathway is still wider than the new one. Ten reps doesn't beat ten years. Keep stacking the new pathway. Day 21 is when it starts holding.", mentorConf: 89 },
+  { q: "After three consecutive winners, a trader doubles their size on the next setup and blows up. What's the psychology?", a: ["Smart risk scaling", "Subconscious narrative of invincibility hijacked execution", "Math error", "Bad market timing"], correct: 1,
+    lesson: "The subconscious built a 'hot streak' story and inflated size. The next trade is independent of the last — but the wired narrative says it isn't. That's the hijack.",
+    mentor: "Three wins, the subconscious starts narrating. 'I'm seeing it clearly today.' That's the lie. Size is a rule, not a feeling.", mentorConf: 87 },
+  { q: "You feel an urge to 'check the chart one more time' before placing a valid trade. What's actually happening?", a: ["Due diligence", "The conscious mind buying time to avoid risk", "Trade is bad", "Healthy caution"], correct: 1,
+    lesson: "Hesitation dressed as analysis. The conscious 5% is generating reasons to delay because the subconscious is afraid. Real edge needs no extra check.",
+    mentor: "Stalling. The setup either fits the rule or it doesn't. 'One more check' is fear in a suit.", mentorConf: 84 },
+  { q: "Which Douglas truth most directly counters revenge trading?", a: ["Anything can happen", "Wins and losses are randomly distributed", "Edge is a probability", "Every moment is unique"], correct: 1,
+    lesson: "Random distribution. If wins and losses are randomly scattered across your edge, then revenge after a loss is mathematically meaningless. The next trade can't 'make up' for the last.",
+    mentor: "Random distribution. The next trade doesn't care about the last one. Revenge assumes the market owes you. It doesn't.", mentorConf: 86 },
+  { q: "A trader can recite the Five Truths perfectly but still moves stops live. Why?", a: ["Truths are wrong", "Memorization is conscious; execution is subconscious", "Not enough practice", "Wrong broker"], correct: 1,
+    lesson: "Recitation runs in 5% of the mind. Live execution runs in 95%. The truths haven't been loaded into the wired layer yet — that requires repetition under emotional engagement, not memorization.",
+    mentor: "Knowing isn't wiring. The Truths only work when they fire from the subconscious. That's why we drill them through the meditation, not just the textbook.", mentorConf: 82 },
+  { q: "After a losing morning, a trader stops following the checklist and starts trading 'feel.' What got hijacked?", a: ["Their strategy", "Their conscious rule-set, replaced by the subconscious autopilot", "The market", "Their broker"], correct: 1,
+    lesson: "Pain depleted willpower, the prefrontal cortex went offline, and the wired autopilot took the wheel. 'Feel' after a loss is almost always the old pathway running unsupervised.",
+    mentor: "Pain shuts the prefrontal cortex down fast. What's left is whatever's wired — usually the bad habit. The One-Bar Rule is your reset.", mentorConf: 85 },
+  { q: "Which body-level signal best predicts impending tilt — BEFORE the trader consciously feels angry?", a: ["Increased heart rate alone", "Jaw clench + shallow breath + tight grip", "Sweating", "Fatigue"], correct: 1,
+    lesson: "The body holds emotional state seconds before the conscious mind labels it. Jaw, shoulders, breath. Read the body and you catch tilt before it becomes a revenge trade.",
+    mentor: "The jaw is the canary. Soften the jaw, drop the shoulders, lengthen the exhale — before the conscious mind even knows you're tilted.", mentorConf: 81 },
+  { q: "Why does mental rehearsal BEFORE sleep work better than after waking?", a: ["You're more relaxed", "Sleep consolidates the pathway overnight", "Less distraction", "Higher cortisol"], correct: 1,
+    lesson: "During sleep, the brain replays and strengthens recently-activated pathways (memory consolidation). Rehearsing execution before sleep gives the brain 8 hours to wire it in.",
+    mentor: "Sleep is the construction crew. Whatever you rehearse last gets built first. Visualize the perfect execution. Then close your eyes.", mentorConf: 78 },
+  { q: "A trader skips a valid setup because 'the last one failed.' Which Douglas truth did they violate?", a: ["Anything can happen", "Every moment is unique", "Edge is probability", "I don't need to know what happens next"], correct: 1,
+    lesson: "Every moment is unique. The previous trade's outcome has zero predictive power over the next setup's outcome. Conflating them is the most quiet, most expensive violation in retail.",
+    mentor: "Every moment is unique. The last setup and this one are separate events. Conflating them is how good systems get killed by bad memories.", mentorConf: 79 },
+  { q: "Which is the FASTEST way to interrupt a subconscious hijack mid-session?", a: ["Walk away for an hour", "One-Bar Rule: conscious breath cycle re-engages prefrontal cortex", "Drink water", "Argue with the urge"], correct: 1,
+    lesson: "One full bar of conscious breathing forces oxygen + attention back into the prefrontal cortex. That breaks the autopilot loop in ~6 seconds. Walking away works too but you lose the read.",
+    mentor: "One-Bar Rule. Six seconds, one breath, prefrontal back online. Faster than coffee, faster than walking. Do it before the rule-break, not after.", mentorConf: 88 },
+  { q: "Two traders read the same book. One internalizes it; one doesn't. The difference is most likely:", a: ["IQ", "How much emotion was active during the read", "Reading speed", "Time of day"], correct: 1,
+    lesson: "Law 3 of plasticity: repetition WITH ATTENTION AND EMOTION wires. Cold neutral reading barely wires anything. The trader who felt the lesson — felt the fear, the recognition — built the pathway.",
+    mentor: "Emotion is the glue. Read it cold, it's information. Read it with skin in the game, it's wiring. That's why we drill after a real losing day.", mentorConf: 76 },
+  { q: "Why is the Reconditioning Card meant to be PRINTED and physically taped to the monitor?", a: ["Looks professional", "Physical presence + repeated visual contact wires faster than digital", "Saves screen space", "Tradition"], correct: 1,
+    lesson: "Physical objects in the environment trigger the subconscious dozens of times a day below conscious awareness. A printed card embedded in the field of view becomes a passive wiring tool.",
+    mentor: "Print it. Tape it. Your subconscious sees it 100 times a day without you noticing. That's free wiring while you trade.", mentorConf: 72 }
+];
+
+const QUESTIONS_CHALLENGE = [
+  { q: "A trader has read Trading in the Zone three times yet still self-sabotages. The mechanism most likely is:", a: ["They didn't understand the book", "Conscious comprehension without subconscious loading via repetition under emotion", "Bad market", "They need a 4th read"], correct: 1,
+    lesson: "Comprehension lives in the conscious mind. Execution lives in the subconscious. Re-reading without emotional repetition just stacks information in the wrong mind. Drill, not read.",
+    mentor: "Reading three times doesn't load it. Drilling once with emotion loads it. The book is a map — but the map isn't the territory.", mentorConf: 70 },
+  { q: "Why does 'I deserve this win' precede most blow-up trades despite being a positive thought?", a: ["It's narcissistic", "It activates an unconscious self-worth ceiling that the subconscious then enforces", "It distracts focus", "It's superstition"], correct: 1,
+    lesson: "Unconscious money/worth ceilings (loaded before age 7) treat 'deserving' as a threshold crossing. When you label success as 'deserved,' the unconscious enforces the cap by sabotaging the next move.",
+    mentor: "Tricky one. 'I deserve it' triggers the worth ceiling. The unconscious doesn't see profit — it sees identity violation. Then it corrects you. Hard.", mentorConf: 64 },
+  { q: "Two traders use the same edge. One scales to $500K/year, one stalls at $40K. Most likely difference?", a: ["Capital", "Unconscious income ceiling enforced by the subconscious", "Strategy", "Broker fees"], correct: 1,
+    lesson: "Same edge + same execution = different income only when the unconscious ceiling differs. The $40K trader self-corrects every time they approach an identity-violating level. The $500K trader's ceiling is wider.",
+    mentor: "Same system, same time, different outcomes — that's a ceiling difference. The $40K trader is enforcing a wage they were imprinted with. The $500K trader broke through it.", mentorConf: 60 },
+  { q: "Coherence breathing works because it:", a: ["Calms you down", "Synchronizes heart rate variability, parasympathetic activation, and bilateral hemispheric integration", "Distracts the mind", "Increases oxygen"], correct: 1,
+    lesson: "Real mechanism: HRV coherence + vagal tone + cross-hemispheric synchronization. The 'calm' is a downstream effect. What you're actually doing is forcing the whole-brain state to engage.",
+    mentor: "It's not just calming — it physically integrates both hemispheres and activates the parasympathetic. That's why it works mid-session, not just pre-market.", mentorConf: 58 },
+  { q: "A trader's edge has 65% win rate. After 4 consecutive losses, they doubt the edge. The flaw in their thinking is:", a: ["They should switch edges", "Random distribution: a 4-loss streak is statistically common at 65% — but the subconscious treats it as evidence", "65% isn't enough", "They need bigger size"], correct: 1,
+    lesson: "At 65%, a 4-loss streak occurs roughly every 100 trades. The math is uneventful. But the subconscious doesn't run statistics — it runs narrative. 'It stopped working' is a story, not a fact.",
+    mentor: "Four losses in a row at 65% happens about every 100 trades. That's noise, not signal. The subconscious can't distinguish the two. You have to.", mentorConf: 65 },
+  { q: "Why is 'finding your edge' typically NOT the bottleneck for traders who've been at it 3+ years?", a: ["Edges are easy", "By year 3, they've found multiple — the bottleneck is psychological capacity to execute them", "Edges decay", "Markets change"], correct: 1,
+    lesson: "Three-year traders have already seen 5-10 valid edges. They didn't lack systems — they lacked the wired execution to deploy any of them without self-sabotage. The bottleneck moved from strategy to psychology by year 2.",
+    mentor: "After year three, the edge isn't the problem. The operator behind the edge is. That's why Track B exists.", mentorConf: 62 },
+  { q: "Mental rehearsal works best when the trader imagines:", a: ["Massive wins", "Executing the system perfectly under losing conditions", "Quitting their job", "Beating the market"], correct: 1,
+    lesson: "Visualizing wins reinforces wanting; visualizing perfect execution UNDER LOSING CONDITIONS wires the actual behavior you need under pressure. Sports psych research is unambiguous on this.",
+    mentor: "Don't visualize the win. Visualize taking a clean loss and re-entering perfectly. That's the pathway that matters live.", mentorConf: 56 },
+  { q: "The 21-day pathway minimum is most fragile during which window?", a: ["Days 1-3", "Days 8-14 (the 'plateau' before automaticity)", "Days 19-21", "It's not fragile"], correct: 1,
+    lesson: "Days 1-7 feel like effort but you're motivated. Days 15-21 start feeling automatic. The mid-window (8-14) is the 'this isn't working' zone — high friction, no visible reward. Most pathway-builds die here.",
+    mentor: "Days 8 to 14 are where pathways go to die. No novelty, no payoff yet. Just grind. Push through that window and the back half wires itself.", mentorConf: 55 },
+  { q: "Which trader has the WIDEST whole-brain pathway after 60 days?", a: ["A: Drilled meditation in flat market", "B: Drilled meditation through 3 real drawdowns", "C: Read 5 books", "D: Watched 100 hours of YouTube"], correct: 1,
+    lesson: "Law 3: repetition under EMOTION wires fastest. Trader B drilled the same protocol while emotionally engaged during real drawdowns. That builds 2-3x the pathway width per rep vs. flat conditions.",
+    mentor: "B every time. The drawdown is the gym. Meditation in flat markets is light reps. Meditation through real pain is heavy reps. That's where the muscle is built.", mentorConf: 58 },
+  { q: "An experienced trader notices they trade better on day 21 than day 1 of every month. Most likely explanation?", a: ["Random", "Cumulative pathway reinforcement from daily protocol resets monthly", "Market cycles", "Better sleep"], correct: 1,
+    lesson: "If they're running the daily protocol, day 21 is exactly when the cumulative pathway reaches its first automaticity threshold. They feel 'on' because the wiring is actually working — for that cycle.",
+    mentor: "Day 21 of their cycle. The protocol works. Then the new month resets the count and the pathway has to be re-fired. That's why we keep going past 66.", mentorConf: 52 },
+  { q: "Why is post-session reflection within 10 minutes EXPONENTIALLY more valuable than 24 hours later?", a: ["Memory fades", "Emotional state-dependent encoding: the lesson only encodes deeply while emotional residue is still active", "Sleep blurs it", "Other trades distract"], correct: 1,
+    lesson: "Memory encodes most deeply during the emotional state in which it was formed. Reflecting 10 min after the loss captures the felt experience. By tomorrow, the emotion is gone — and so is 80% of the encoding power.",
+    mentor: "Ten minutes. While the body still remembers. After that, the lesson becomes intellectual — and intellectual lessons don't wire.", mentorConf: 60 },
+  { q: "The single deepest predictor of long-term trading success across studies is:", a: ["IQ", "Capital", "Capacity to remain in the whole-brain state under loss", "Education"], correct: 2,
+    lesson: "Not IQ. Not capital. Not edge. The single most studied predictor is the ability to maintain integrated brain function (left + right hemispheres firing in sync) DURING loss. Everything else flows from that.",
+    mentor: "Whole-brain state under loss. That's the whole game. Capital can be rebuilt. Edges can be found. The capacity to stay integrated when you're bleeding — that's the rare one.", mentorConf: 70 }
+];
+
+// Active question set (set at game start by difficulty selection)
+let QUESTIONS = QUESTIONS_EASY;
+
 let G = null;
+let G_DIFFICULTY = 'easy';
 function newGame() {
   return { qIdx: 0, bankedAmount: 0, lifelines: { '5050': false, poll: false, mentor: false }, pendingPick: null, locked: false, correctCount: 0, over: false };
 }
@@ -962,7 +1159,8 @@ function ensureAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     masterGain = audioCtx.createGain();
-    masterGain.gain.value = musicEnabled ? 1 : 0;
+    // Music sits quietly under SFX — significantly reduced
+    masterGain.gain.value = musicEnabled ? 0.35 : 0;
     masterGain.connect(audioCtx.destination);
   }
   if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -1018,11 +1216,11 @@ function startAmbientBed() {
   stopAllMusicNodes(0.6);
   const t = audioCtx.currentTime;
   const freqs = [
-    { f: 65.41,  type: 'sine',     g: 0.04 },
-    { f: 130.81, type: 'sine',     g: 0.025 },
-    { f: 155.56, type: 'triangle', g: 0.018 },
-    { f: 196.00, type: 'triangle', g: 0.018 },
-    { f: 261.63, type: 'sine',     g: 0.012 }
+    { f: 65.41,  type: 'sine',     g: 0.022 },
+    { f: 130.81, type: 'sine',     g: 0.015 },
+    { f: 155.56, type: 'triangle', g: 0.010 },
+    { f: 196.00, type: 'triangle', g: 0.010 },
+    { f: 261.63, type: 'sine',     g: 0.007 }
   ];
   freqs.forEach((spec, i) => {
     const osc = audioCtx.createOscillator();
@@ -1048,25 +1246,28 @@ function startTensionBed() {
   if (!audioCtx) return;
   stopAllMusicNodes(0.3);
   const t = audioCtx.currentTime;
-  [55, 110, 220].forEach((bf, i) => {
+  // Softer tension — triangle wave instead of sawtooth, lower volume
+  [82.41, 164.81, 246.94].forEach((bf, i) => {
     const osc = audioCtx.createOscillator();
     const g = audioCtx.createGain();
     const filter = audioCtx.createBiquadFilter();
-    filter.type = 'bandpass'; filter.frequency.value = 400; filter.Q.value = 2;
-    osc.type = 'sawtooth'; osc.frequency.value = bf;
+    filter.type = 'lowpass'; filter.frequency.value = 600; filter.Q.value = 1;
+    osc.type = 'triangle'; osc.frequency.value = bf;
     g.gain.value = 0;
-    g.gain.linearRampToValueAtTime(0.03 - i*0.005, t + 1);
-    filter.frequency.linearRampToValueAtTime(2000, t + 2.5);
+    g.gain.linearRampToValueAtTime(0.018 - i*0.003, t + 1.5);
+    // gentle filter sweep
+    filter.frequency.linearRampToValueAtTime(1200, t + 3);
     osc.connect(filter); filter.connect(g); g.connect(masterGain);
     osc.start(t);
     musicNodes.push({ osc, gain: g });
   });
+  // Soft heartbeat pulse — much quieter, slower, sine wave
   let pulseCount = 0;
   musicTickInterval = setInterval(() => {
     if (activeMusicLayer !== 'tension') { clearInterval(musicTickInterval); musicTickInterval = null; return; }
-    tone(880 + pulseCount*20, 0.05, 'square', 0.03);
+    tone(220, 0.08, 'sine', 0.012);
     pulseCount++;
-  }, 400);
+  }, 700);
   activeMusicLayer = 'tension';
 }
 
@@ -1075,11 +1276,11 @@ function startVictoryBed() {
   stopAllMusicNodes(0.2);
   const t = audioCtx.currentTime;
   const freqs = [
-    { f: 130.81, type: 'sine',     g: 0.04 },
-    { f: 164.81, type: 'triangle', g: 0.03 },
-    { f: 196.00, type: 'triangle', g: 0.03 },
-    { f: 261.63, type: 'sine',     g: 0.025 },
-    { f: 329.63, type: 'sine',     g: 0.02 }
+    { f: 130.81, type: 'sine',     g: 0.022 },
+    { f: 164.81, type: 'triangle', g: 0.018 },
+    { f: 196.00, type: 'triangle', g: 0.018 },
+    { f: 261.63, type: 'sine',     g: 0.015 },
+    { f: 329.63, type: 'sine',     g: 0.012 }
   ];
   freqs.forEach(spec => {
     const osc = audioCtx.createOscillator();
@@ -1101,12 +1302,12 @@ function startDirgeBed() {
   [65.41, 82.41, 98.00, 130.81].forEach(f => {
     const osc = audioCtx.createOscillator();
     const g = audioCtx.createGain();
-    osc.type = 'sawtooth'; osc.frequency.value = f;
+    osc.type = 'triangle'; osc.frequency.value = f;
     osc.frequency.linearRampToValueAtTime(f * 0.85, t + 4);
     g.gain.value = 0;
-    g.gain.linearRampToValueAtTime(0.04, t + 0.3);
+    g.gain.linearRampToValueAtTime(0.022, t + 0.3);
     const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass'; filter.frequency.value = 800;
+    filter.type = 'lowpass'; filter.frequency.value = 600;
     osc.connect(filter); filter.connect(g); g.connect(masterGain);
     osc.start(t);
     musicNodes.push({ osc, gain: g });
@@ -1137,7 +1338,7 @@ const SFX = {
 
 function toggleAudio() {
   musicEnabled = !musicEnabled;
-  if (masterGain) masterGain.gain.linearRampToValueAtTime(musicEnabled ? 1 : 0, audioCtx.currentTime + 0.2);
+  if (masterGain) masterGain.gain.linearRampToValueAtTime(musicEnabled ? 0.35 : 0, audioCtx.currentTime + 0.2);
   $('#audioToggle').classList.toggle('muted', !musicEnabled);
 }
 
@@ -1421,15 +1622,26 @@ function endGame(outcome) {
   $('#end').classList.add('on');
 }
 
-$('#startBtn').addEventListener('click', () => {
-  ensureAudio();
-  SFX.intro();
-  startAmbientBed();
-  $('#title').classList.add('hidden');
-  $('#game').classList.add('on');
-  G = newGame();
-  buildLadder();
-  setTimeout(loadQuestion, 600);
+$$('.diff-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    ensureAudio();
+    SFX.intro();
+    startAmbientBed();
+    // Set difficulty
+    const diff = btn.dataset.diff;
+    if (diff === 'easy') QUESTIONS = QUESTIONS_EASY;
+    else if (diff === 'intermediate') QUESTIONS = QUESTIONS_INTERMEDIATE;
+    else QUESTIONS = QUESTIONS_CHALLENGE;
+    G_DIFFICULTY = diff;
+    // Update top bar label
+    const label = diff === 'easy' ? 'FOUNDATION' : diff === 'intermediate' ? 'APPLIED' : 'SYNTHESIS';
+    $('.top-bar .title-text').innerHTML = `▸ REWIRE THE BRAIN · <span style="color:var(--gold-bright)">${label}</span>`;
+    $('#title').classList.add('hidden');
+    $('#game').classList.add('on');
+    G = newGame();
+    buildLadder();
+    setTimeout(loadQuestion, 600);
+  });
 });
 
 $('#audioToggle').addEventListener('click', () => { ensureAudio(); toggleAudio(); });
@@ -1455,7 +1667,11 @@ $('#restart-btn').addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', e => {
-  if (!$('#title').classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { $('#startBtn').click(); return; }
+  if (!$('#title').classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) {
+    // Default to intermediate (the recommended option) when pressing Enter
+    document.querySelector('.diff-btn.featured').click();
+    return;
+  }
   if ($('#end').classList.contains('on') && (e.key === 'Enter' || e.key === ' ')) { $('#restart-btn').click(); return; }
   if ($('#lock-overlay').classList.contains('on')) {
     if (e.key === 'Enter') $('#lock-confirm').click();
