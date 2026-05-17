@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#050816">
 <title>REWIRE THE BRAIN · PA Monty's Trading Psychology Game Show</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,6 +69,10 @@ body { display: flex; align-items: center; justify-content: center; }
   height: 2px; background: var(--red);
   transform: rotate(-30deg);
 }
+
+/* Mobile-only elements hidden on desktop */
+.mobile-money-strip { display: none; }
+.mobile-host-mini { display: none; }
 
 .logo-watermark {
   position: absolute; top: 24px; left: 24px;
@@ -459,15 +465,236 @@ body { display: flex; align-items: center; justify-content: center; }
   .arena { left: 220px; right: 264px; }
   .host-frame { width: 240px; }
 }
+
+/* ============ MOBILE LAYOUT ============ */
 @media (max-width: 900px) {
+  /* Allow scrolling on mobile */
+  html, body {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  body { display: block; }
+
+  #stage {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  /* Title screen stays full-viewport */
+  #title {
+    min-height: 100vh;
+    position: relative;
+    inset: auto;
+  }
+
+  /* Hide desktop-only rails */
   .money-ladder { display: none; }
   .host-frame { display: none; }
-  .arena { left: 24px; right: 24px; top: 92px; bottom: 110px; }
-  .top-bar { left: 96px; right: 80px; }
-  .answers-grid { grid-template-columns: 1fr; }
-  .lifeline { width: 70px; }
+
+  /* Switch game to document flow */
+  #game {
+    position: relative;
+    inset: auto;
+    min-height: 100vh;
+    padding: 80px 16px 100px 16px;
+  }
+
+  /* Top bar stays fixed on top */
+  .top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 60px;
+    padding: 0 56px 0 64px;
+    background: rgba(5,8,22,0.95);
+    backdrop-filter: blur(10px);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* On mobile, show mobile-host-mini in top bar, hide brand title */
+  .top-bar .title-text {
+    display: none;
+  }
+  .mobile-host-mini {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+  .mobile-host-mini .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-image: url('pa_monty_host.jpg');
+    background-size: cover;
+    background-position: center top;
+    border: 2px solid var(--gold-deep);
+    flex-shrink: 0;
+  }
+  .mobile-host-mini.correct .avatar { border-color: var(--green); box-shadow: 0 0 10px var(--green); }
+  .mobile-host-mini.wrong .avatar { border-color: var(--red); box-shadow: 0 0 10px var(--red); }
+  .mobile-host-mini.locking .avatar { border-color: var(--gold-bright); box-shadow: 0 0 12px var(--gold-bright); }
+  .mobile-host-mini.celebrate .avatar { border-color: var(--gold-bright); animation: miniCelebrate 1.5s ease-in-out infinite; }
+  .mobile-host-mini .chyron {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    color: var(--white);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.3;
+    opacity: 0.8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .top-bar .banked {
+    flex-shrink: 0;
+  }
+  .top-bar .banked .l { font-size: 7px; }
+  .top-bar .banked .v { font-size: 16px; }
+
+  @keyframes miniCelebrate {
+    0%,100% { box-shadow: 0 0 10px var(--gold-bright); }
+    50% { box-shadow: 0 0 25px var(--gold-bright); transform: scale(1.08); }
+  }
+
+  /* Watermark in top-left of fixed bar */
+  .logo-watermark {
+    position: fixed;
+    top: 12px; left: 12px;
+    width: 40px; height: 40px;
+    z-index: 51;
+  }
+
+  .audio-toggle {
+    position: fixed;
+    top: 12px; right: 12px;
+    width: 36px; height: 36px;
+    font-size: 14px;
+    z-index: 51;
+  }
+
+  /* Arena flows in document */
+  .arena {
+    position: relative;
+    inset: auto;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: auto;
+  }
+
+  .question-card { padding: 18px 18px; margin-bottom: 18px; }
+  .question-text { font-size: 17px; line-height: 1.4; }
+  .question-meta { font-size: 9px; gap: 10px; margin-bottom: 12px; }
+  .question-meta .value { font-size: 12px; }
+
+  .answers-grid { grid-template-columns: 1fr; gap: 10px; }
+  .answer-pod { padding: 14px 16px; font-size: 14px; }
+  .answer-pod .letter { font-size: 16px; width: 24px; }
+
+  /* Bottom bar stays fixed */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 70px;
+    background: rgba(5,8,22,0.95);
+    backdrop-filter: blur(10px);
+    padding: 0 12px;
+    z-index: 50;
+    border-top: 1px solid rgba(232,146,42,0.3);
+  }
+
+  .lifelines { gap: 6px; }
+  .lifeline {
+    width: 64px;
+    height: 52px;
+  }
+  .lifeline .icon { font-size: 14px; margin-bottom: 1px; }
+  .lifeline .label { font-size: 6px; letter-spacing: 1px; }
+
+  .walkaway-btn {
+    font-size: 11px;
+    padding: 10px 14px;
+    letter-spacing: 2px;
+  }
+
+  /* Mobile-friendly mini money tracker — replaces hidden ladder */
+  .mobile-money-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, var(--panel) 0%, var(--bg-deep) 100%);
+    border: 1px solid var(--gold-deep);
+    padding: 10px 16px;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    gap: 24px;
+  }
+  .mobile-money-strip > div { flex: 1; }
+  .mobile-money-strip .label {
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .mobile-money-strip .next {
+    font-size: 16px;
+    color: var(--gold-bright);
+    font-weight: 700;
+    text-shadow: 0 0 12px rgba(232,146,42,0.4);
+  }
+
+  /* Overlays — make scrollable on mobile */
+  .lock-overlay, .poll-overlay, .mentor-overlay, #end {
+    position: fixed;
+    inset: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 24px 20px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 80px;
+  }
+  .lock-overlay.on, .poll-overlay.on, .mentor-overlay.on, #end.on {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .mentor-portrait-wrap { width: 160px; height: 160px; }
+  .mentor-speech .text { font-size: 14px; }
+  .poll-bars { gap: 12px; min-height: 200px; }
+  .poll-bar-wrap { width: 50px; }
+  .lock-overlay h2 { font-size: 36px; }
+  .lock-overlay .pick { font-size: 16px; }
+  .lock-overlay .pick strong { font-size: 22px; }
+  .lock-buttons { flex-direction: column; width: 100%; max-width: 280px; }
+  .lock-btn { width: 100%; }
+
+  #end h1 { font-size: 32px; letter-spacing: 2px; }
+  #end .amount { font-size: 48px; margin-bottom: 20px; }
+  #end .stats-bar { gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+  #end .stat .v { font-size: 18px; }
+  #end .lesson { font-size: 14px; padding: 16px 18px; }
+
+  /* Title screen mobile */
+  #title h1 { font-size: 56px; }
+  .logo-intro { width: 100px; height: 100px; margin-bottom: 24px; }
+  .tagline { font-size: 14px; margin-bottom: 28px; }
+  .start-btn { font-size: 16px; padding: 16px 36px; }
 }
-@media (max-height: 700px) {
+
+@media (max-height: 700px) and (min-width: 901px) {
   .question-card { padding: 18px 24px; margin-bottom: 18px; }
   .answer-pod { padding: 14px 18px; }
 }
@@ -504,6 +731,10 @@ body { display: flex; align-items: center; justify-content: center; }
   <div id="game">
     <div class="top-bar">
       <div class="title-text">▸ REWIRE THE BRAIN · M01</div>
+      <div class="mobile-host-mini" id="mobile-host-mini">
+        <div class="avatar"></div>
+        <div class="chyron" id="mobile-chyron"></div>
+      </div>
       <div class="banked">
         <div class="l">BANKED</div>
         <div class="v" id="banked-amt">$0</div>
@@ -525,6 +756,7 @@ body { display: flex; align-items: center; justify-content: center; }
         <!-- Video state stack — only the active one shows -->
         <video class="host-video" data-state="idle"      src="host_idle.mp4"      muted loop playsinline preload="auto"></video>
         <video class="host-video" data-state="locking"   src="host_locking.mp4"   muted loop playsinline preload="auto"></video>
+        <video class="host-video" data-state="thinking"  src="host_thinking.mp4"  muted loop playsinline preload="auto"></video>
         <video class="host-video" data-state="correct"   src="host_correct.mp4"   muted loop playsinline preload="auto"></video>
         <video class="host-video" data-state="wrong"     src="host_wrong.mp4"     muted loop playsinline preload="auto"></video>
         <video class="host-video" data-state="celebrate" src="host_celebrate.mp4" muted loop playsinline preload="auto"></video>
@@ -540,6 +772,16 @@ body { display: flex; align-items: center; justify-content: center; }
     </div>
 
     <div class="arena">
+      <div class="mobile-money-strip">
+        <div>
+          <div class="label">CURRENT</div>
+          <div class="next" id="mobile-current-amt">$100</div>
+        </div>
+        <div style="text-align:right">
+          <div class="label">NEXT WIN</div>
+          <div class="next" id="mobile-next-amt">$500</div>
+        </div>
+      </div>
       <div class="question-meta">
         <span class="pill">QUESTION <span id="q-num">1</span> / 12</span>
         <span>FOR</span>
@@ -670,9 +912,9 @@ function newGame() {
 }
 
 // ============ HOST VIDEO STATE MACHINE ============
-// 6 states. Game expects these video files in the same folder:
-//   host_idle.mp4, host_locking.mp4, host_correct.mp4,
-//   host_wrong.mp4, host_celebrate.mp4, host_mentor.mp4
+// 7 states. Game expects these video files in the same folder:
+//   host_idle.mp4, host_locking.mp4, host_thinking.mp4,
+//   host_correct.mp4, host_wrong.mp4, host_celebrate.mp4, host_mentor.mp4
 // If a video file is missing, the static pa_monty_host.jpg renders as fallback.
 function setHostState(state) {
   $$('.host-video').forEach(v => {
@@ -690,11 +932,23 @@ function setHostState(state) {
   else if (state === 'wrong') hp.classList.add('wrong');
   else if (state === 'locking') hp.classList.add('locking');
   else if (state === 'celebrate') hp.classList.add('celebrate');
+  // Mirror to mobile mini host
+  const mm = $('#mobile-host-mini');
+  if (mm) {
+    mm.classList.remove('correct', 'wrong', 'locking', 'celebrate');
+    if (state === 'correct') mm.classList.add('correct');
+    else if (state === 'wrong') mm.classList.add('wrong');
+    else if (state === 'locking') mm.classList.add('locking');
+    else if (state === 'celebrate') mm.classList.add('celebrate');
+  }
 }
 function hostSay(text) {
-  if (!text) { $('#host-chyron').classList.remove('on'); return; }
+  if (!text) { $('#host-chyron').classList.remove('on'); $('#mobile-chyron').textContent = ''; return; }
   $('#chyron-text').textContent = text;
   $('#host-chyron').classList.add('on');
+  // Mirror to mobile (truncate long lessons)
+  const mobileText = text.length > 80 ? text.substring(0, 77) + '...' : text;
+  $('#mobile-chyron').textContent = mobileText;
 }
 
 // ============ PROCEDURAL MUSIC ENGINE ============
@@ -934,7 +1188,17 @@ function updateLadder() {
     if (idx === G.qIdx) r.classList.add('current');
   });
 }
-function updateBanked() { $('#banked-amt').textContent = '$' + G.bankedAmount.toLocaleString(); }
+function updateBanked() {
+  $('#banked-amt').textContent = '$' + G.bankedAmount.toLocaleString();
+  // Mobile strip: show current question's prize and next milestone
+  const currentEl = $('#mobile-current-amt');
+  const nextEl = $('#mobile-next-amt');
+  if (currentEl && nextEl && G.qIdx < PRIZE.length) {
+    currentEl.textContent = '$' + PRIZE[G.qIdx].toLocaleString();
+    const nextIdx = Math.min(G.qIdx + 1, PRIZE.length - 1);
+    nextEl.textContent = G.qIdx < PRIZE.length - 1 ? '$' + PRIZE[nextIdx].toLocaleString() : 'WIN!';
+  }
+}
 
 function loadQuestion() {
   if (G.qIdx >= QUESTIONS.length) return endGame('win');
@@ -1050,6 +1314,7 @@ function useFiftyFifty() {
   const remove = wrongs.slice(0, 2);
   const pods = $$('#answers-grid .answer-pod');
   remove.forEach(i => pods[i].classList.add('eliminated'));
+  setHostState('thinking');
   hostSay("Two wrong answers eliminated. Read what's left.");
 }
 
@@ -1080,6 +1345,7 @@ function useCohortPoll() {
     wrap.appendChild(w);
   });
   $('#poll-overlay').classList.add('on');
+  setHostState('thinking');
   hostSay("");
 }
 
@@ -1093,10 +1359,11 @@ function useMentor() {
   $('#mentor-text').textContent = q.mentor;
   $('#mentor-conf').textContent = `▸ MY CONFIDENCE: ${q.mentorConf}%`;
   $('#mentor-overlay').classList.add('on');
-  // play mentor video
+  // play mentor video in overlay
   const mv = $('#mentor-video');
   mv.classList.add('on');
   try { mv.currentTime = 0; const p = mv.play(); if (p) p.catch(()=>{}); } catch(e){}
+  setHostState('thinking');
   hostSay("");
 }
 
